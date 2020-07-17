@@ -25,4 +25,8 @@ public class StringUtilFbTest extends LightJavaCodeInsightFixtureTestCase {
         assertEquals(StringUtilFb.trim("spotbugs", 'g', 's', 't'), "potbu");
     }
 
+    public void testTrimWithoutCharsArg() {
+        String s = "spotbugs";
+        assertEquals(StringUtilFb.trim(s), s);
+    }
 }
