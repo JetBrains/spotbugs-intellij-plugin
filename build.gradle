@@ -22,6 +22,7 @@
 plugins {
     id "org.jetbrains.intellij" version "0.4.21"
     id 'jacoco'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.71'
 }
 
 apply plugin: 'org.jetbrains.intellij'
@@ -34,6 +35,14 @@ targetCompatibility = 1.8
 repositories {
     mavenLocal()
     mavenCentral()
+    maven { url = "https://jetbrains.bintray.com/intellij-third-party-dependencies" }
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
 }
 
 intellij {
@@ -60,6 +69,9 @@ configurations {
     fbContribJava6
 }
 
+def remoteRobotVersion = "0.9.35"
+def fixturesVersion = "1.1.18"
+
 dependencies {
     implementation ('com.github.spotbugs:spotbugs:4.1.3') {
         exclude group: 'xml-apis', module: 'xml-apis'
@@ -73,6 +85,10 @@ dependencies {
     thirdPartyPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.7'
     thirdPartyPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0'
     fbContribJava6 'com.mebigfatguy.fb-contrib:fb-contrib:6.2.1'
+    testImplementation("com.intellij.remoterobot:remote-robot:$remoteRobotVersion")
+    testImplementation("com.intellij.remoterobot:remote-fixtures:$fixturesVersion")
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
 }
 
 task copyGradleProperties(type: Copy) {
@@ -105,11 +121,20 @@ tasks.buildPlugin.dependsOn(copyThirdPartyPlugins)
 tasks.jacocoTestReport.dependsOn(deleteThirdPartyPlugins)
 tasks.jacocoTestCoverageVerification.dependsOn(deleteThirdPartyPlugins)
 
+downloadRobotServerPlugin.version = remoteRobotVersion
+
+runIdeForUiTests {
+    systemProperty "robot-server.port", "8082"
+}
+
+tasks.test.dependsOn(runIdeForUiTests)
+
 test {
     // Set idea.home.path to the absolute path to the intellij-community source
     // on your local machine.
     systemProperty "idea.home.path", "~/intellij-community"
     finalizedBy jacocoTestReport
+    useJUnitPlatform()
 }
 
 jacocoTestReport {
@@ -120,6 +145,8 @@ jacocoTestReport {
         csv.enabled false
     }
 }
+
+buildSearchableOptions.enabled = false
 
 wrapper {
     gradleVersion = '6.3'
