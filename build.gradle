@@ -61,7 +61,7 @@ configurations {
 }
 
 dependencies {
-    implementation ('com.github.spotbugs:spotbugs:4.7.3') {
+    implementation ('com.github.spotbugs:spotbugs:4.7.2') {
         exclude group: 'xml-apis', module: 'xml-apis'
     }
     implementation 'net.sf.saxon:Saxon-HE:9.9.1-2'
