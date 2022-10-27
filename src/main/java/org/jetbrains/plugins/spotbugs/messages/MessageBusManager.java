@@ -49,6 +49,10 @@ public final class MessageBusManager {
 		return ret;
 	}
 
+	public static void removeSubscriber(Project project, Object subscriber) {
+		of(project).remove(subscriber);
+	}
+
 	public static <L extends AnalysisStateListener> void subscribeAnalysisState(@NotNull final Project project, @NotNull final Object subscriber, @NotNull final L handler) {
 		subscribe(project, subscriber, AnalysisStartedListener.TOPIC, handler);
 		subscribe(project, subscriber, AnalysisAbortingListener.TOPIC, handler);
