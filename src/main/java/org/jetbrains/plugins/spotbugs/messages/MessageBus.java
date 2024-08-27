@@ -43,19 +43,22 @@ final class MessageBus {
 
 
 	private final Project _project;
-	private final Map<Object/*subscriber*/, Map<Topic<?>, Object/*handler*/>> _subscribers;
-	private final Map<Topic<?>, Object/*handler*/> _publisher;
+	private final ConcurrentHashMap<Object/*subscriber*/, Map<Topic<?>, Object/*handler*/>> _subscribers;
+	private final ConcurrentHashMap<Topic<?>, Object/*handler*/> _publisher;
 
 
 	MessageBus(@NotNull final Project project) {
 		_project = project;
-		_subscribers = new HashMap<>();
-		_publisher = new HashMap<>();
+		_subscribers = new ConcurrentHashMap<>();
+		_publisher = new ConcurrentHashMap<>();
 	}
 
+	public void remove(Object subscriber) {
+		_subscribers.remove(subscriber);
+	}
 
 	public <L> void subscribe(@NotNull final Object subscriber, @NotNull final Topic<L> topic, @NotNull final L handler) {
-		Map<Topic<?>, Object/*handler*/> handlerByTopic = _subscribers.computeIfAbsent(subscriber, k -> new HashMap<>());
+		Map<Topic<?>, Object/*handler*/> handlerByTopic = _subscribers.computeIfAbsent(subscriber, k -> new ConcurrentHashMap<>());
 		if (!handlerByTopic.containsKey(topic)) {
 			handlerByTopic.put(topic, handler);
 		} // else do nothing ; subscriber has already subscribed this topic
