@@ -57,7 +57,7 @@ public class RecurseNodeVisitor<T extends VisitableTreeNode> implements NodeVisi
 
 	@Override
 	public void visitGroupNode(@NotNull final BugInstanceGroupNode node) {
-		if (Bug.equalsBugType(_recurseVisitCriteria.getBug(), node.getBug()) && _recurseVisitCriteria.getDepth() == node.getDepth() && _recurseVisitCriteria.getGroupName().equals(node.getGroupName())) {
+		if (Bug.equalsBugType(_recurseVisitCriteria.getBug(), node.getBug()) && Bug.equalsBugClass(_recurseVisitCriteria.getBug(), node.getBug()) && _recurseVisitCriteria.getDepth() == node.getDepth() && _recurseVisitCriteria.getGroupName().equals(node.getGroupName())) {
 			_resultNode = node;
 		} else {
 			_resultNode = node.findChildNode(_recurseVisitCriteria.getBug(), _recurseVisitCriteria.getDepth(), _recurseVisitCriteria.getGroupName());

@@ -97,7 +97,7 @@ public final class BugInstanceGroupNode extends AbstractTreeNode<VisitableTreeNo
 
 	@Nullable
 	public BugInstanceGroupNode findChildNode(final Bug bug, final int depth, final String groupName) {
-		if (Bug.equalsBugType(this.bug, bug) && depth == _depthFromRoot && groupName.equals(_groupName)) {
+		if (Bug.equalsBugType(this.bug, bug) && Bug.equalsBugClass(this.bug, bug) && depth == _depthFromRoot && groupName.equals(_groupName)) {
 			return this;
 		}
 		final RecurseVisitCriteria criteria = new RecurseVisitCriteria(bug, depth, groupName);
