@@ -19,6 +19,7 @@
  */
 package org.jetbrains.plugins.spotbugs.actions;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
@@ -87,4 +88,9 @@ abstract class AbstractAction extends AnAction {
 			@NotNull final ToolWindow toolWindow,
 			@NotNull final FindBugsState state
 	);
+
+	@Override
+	public @NotNull ActionUpdateThread getActionUpdateThread() {
+		return ActionUpdateThread.EDT;
+	}
 }

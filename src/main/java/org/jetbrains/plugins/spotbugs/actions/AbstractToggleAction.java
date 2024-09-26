@@ -19,6 +19,7 @@
  */
 package org.jetbrains.plugins.spotbugs.actions;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.ToggleAction;
 import com.intellij.openapi.module.Module;
@@ -185,4 +186,9 @@ abstract class AbstractToggleAction extends ToggleAction {
 			@NotNull final AbstractSettings settings,
 			boolean select
 	);
+
+	@Override
+	public @NotNull ActionUpdateThread getActionUpdateThread() {
+		return ActionUpdateThread.EDT;
+	}
 }
