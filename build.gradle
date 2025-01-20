@@ -47,7 +47,7 @@ intellij {
 }
 
 jacoco {
-    toolVersion = "0.8.5"
+    toolVersion = "0.8.12"
 }
 
 runIde {
@@ -60,20 +60,20 @@ configurations {
 }
 
 dependencies {
-    implementation ('com.github.spotbugs:spotbugs:4.8.6') {
+    implementation ('com.github.spotbugs:spotbugs:4.9.0') {
         exclude group: 'xml-apis', module: 'xml-apis'
         exclude group: 'org.apache.logging.log4j', module: 'log4j-api'
         exclude group: 'org.apache.logging.log4j', module: 'log4j-core'
         exclude group: 'org.slf4j', module: 'slf4j-api'
     }
-    implementation 'net.sf.saxon:Saxon-HE:12.3'
-    implementation 'org.jsoup:jsoup:1.16.1'
+    implementation 'net.sf.saxon:Saxon-HE:12.5'
+    implementation 'org.jsoup:jsoup:1.18.3'
     implementation 'info.clearthought:table-layout:4.3.0'
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.assertj:assertj-core:3.21.0'
-    testImplementation 'org.mockito:mockito-core:4.0.0'
-    thirdPartyPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.0'
-    thirdPartyPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
+    testImplementation 'org.assertj:assertj-core:3.27.3'
+    testImplementation 'org.mockito:mockito-core:5.15.2'
+    thirdPartyPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.9'
+    thirdPartyPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.13.0'
     fbContribJava6 'com.mebigfatguy.fb-contrib:fb-contrib:6.2.1'
 }
 

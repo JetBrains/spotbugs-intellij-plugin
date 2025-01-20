@@ -38,14 +38,16 @@ public enum Plugins {
 
 	// http://fb-contrib.sourceforge.net/
 	// Complete list of versions https://search.maven.org/artifact/com.mebigfatguy.fb-contrib/fb-contrib
-	fb_contrib("fb-contrib-7.6.0.jar", "com.mebigfatguy.fbcontrib", true,
+	fb_contrib("fb-contrib-7.6.9.jar", "com.mebigfatguy.fbcontrib", true,
+					"fb-contrib-7.6.0.jar",
 					"fb-contrib-7.4.7.jar", "fb-contrib-6.8.0.jar", "fb-contrib-6.6.1.jar", "fb-contrib-6.2.1.jar",
 					"fb-contrib-6.0.0.jar", "fb-contrib-5.2.1.jar"),
 	fb_contrib_java6("fb-contrib-6.2.1.jar", "com.mebigfatguy.fbcontrib", false, "fb-contrib-6.0.0.jar", "fb-contrib-5.2.1.jar"),
 
 	// http://h3xstream.github.io/find-sec-bugs/
 	// Complete list of versions : https://search.maven.org/artifact/com.h3xstream.findsecbugs/findsecbugs-plugin
-	findsecbugs_plugin("findsecbugs-plugin-1.12.0.jar","com.h3xstream.findsecbugs", true,
+	findsecbugs_plugin("findsecbugs-plugin-1.13.0.jar","com.h3xstream.findsecbugs", true,
+			"findsecbugs-plugin-1.12.0.jar",
 					"findsecbugs-plugin-1.11.0.jar", "findsecbugs-plugin-1.10.1.jar", "findsecbugs-plugin-1.10.0.jar", 
 					"findsecbugs-plugin-1.9.0.jar", "findsecbugs-plugin-1.8.0.jar",
 					"findsecbugs-plugin-1.7.1.jar", "findsecbugs-plugin-1.7.0.jar", "findsecbugs-plugin-1.6.0.jar",

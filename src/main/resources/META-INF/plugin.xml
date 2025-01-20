@@ -81,6 +81,12 @@
     </description>
     <change-notes>
         <![CDATA[<html>
+        <h3>1.2.9</h3>
+        <ul>
+            <li>SpotBugs dependency updated from 4.8.6 to 4.9.0</li>
+            <li>Updated Find Security Bugs plugin to 1.13.0</li>
+            <li>Updated FB-Contrib plugin to 7.6.9</li>
+        </ul>
         <h3>1.2.8</h3>
         <ul>
             <li>Bump SpotBugs dependency to 4.8.6</li>
