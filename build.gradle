@@ -126,5 +126,5 @@ jacocoTestReport {
 }
 
 wrapper {
-    gradleVersion = '6.3'
+    gradleVersion = '8.12'
 }
