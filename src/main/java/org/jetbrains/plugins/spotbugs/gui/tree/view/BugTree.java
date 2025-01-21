@@ -131,7 +131,7 @@ public class BugTree extends Tree implements DataProvider, OccurenceNavigator {
 					if (!(nodedescriptor instanceof BugInstanceNode)) {
 						return;
 					}
-					OpenSourceUtil.openSourcesFrom(BugTree.this, true);
+					OpenSourceUtil.openSourcesFrom(BugTree.this::getData, true);
 				}
 			}
 

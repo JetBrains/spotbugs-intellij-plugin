@@ -19,35 +19,37 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+
 plugins {
-    id "org.jetbrains.intellij" version "1.16.1"
+    id "org.jetbrains.intellij.platform" version "2.2.1"
     id 'jacoco'
 }
 
-apply plugin: 'org.jetbrains.intellij'
 apply plugin: 'maven-publish'
 apply plugin: 'java'
 
-sourceCompatibility = 17
-targetCompatibility = 17
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
 repositories {
     mavenLocal()
     mavenCentral()
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
-intellij {
-    version = ijVersion
-
-    pluginName = 'spotbugs-idea'
-    updateSinceUntilBuild = false
-    type = 'IC'
-
-    plugins = ['git4idea', 'java']
+intellijPlatform {
+    pluginConfiguration {
+        name = 'spotbugs-idea'
+    }
 }
 
 jacoco {
-    toolVersion = "0.8.8"
+    toolVersion = "0.8.12"
 }
 
 runIde {
@@ -60,34 +62,45 @@ configurations {
 }
 
 dependencies {
-    implementation ('com.github.spotbugs:spotbugs:4.8.6') {
+    intellijPlatform {
+        def type = providers.gradleProperty('platformType')
+        def version = providers.gradleProperty('platformVersion')
+
+        create(type, version)
+
+        bundledPlugin 'com.intellij.java'
+
+        testFramework TestFrameworkType.Platform.INSTANCE
+        testFramework TestFrameworkType.Plugin.Java.INSTANCE
+    }
+    implementation ('com.github.spotbugs:spotbugs:4.9.0') {
         exclude group: 'xml-apis', module: 'xml-apis'
         exclude group: 'org.apache.logging.log4j', module: 'log4j-api'
         exclude group: 'org.apache.logging.log4j', module: 'log4j-core'
         exclude group: 'org.slf4j', module: 'slf4j-api'
     }
-    implementation ('net.sf.saxon:Saxon-HE:12.3') {
+    implementation ('net.sf.saxon:Saxon-HE:12.5') {
         exclude group: 'org.slf4j', module: 'slf4j-api'
     }
-    implementation 'org.jsoup:jsoup:1.16.1'
+    implementation 'org.jsoup:jsoup:1.18.3'
     implementation 'info.clearthought:table-layout:4.3.0'
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.assertj:assertj-core:3.21.0'
-    testImplementation 'org.mockito:mockito-core:4.0.0'
-    thirdPartyPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.0'
-    thirdPartyPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
+    testImplementation 'org.assertj:assertj-core:3.27.3'
+    testImplementation 'org.mockito:mockito-core:5.15.2'
+    thirdPartyPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.9'
+    thirdPartyPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.13.0'
     fbContribJava6 'com.mebigfatguy.fb-contrib:fb-contrib:6.2.1'
 }
 
 tasks.register('copyGradleProperties', Copy) {
-    description 'Copy gradle.properties to project resources.'
+    description = 'Copy gradle.properties to project resources.'
     from 'gradle.properties'
     into 'build/resources/main/org/jetbrains/plugins/spotbugs/common'
     rename { _ -> 'version.properties' }
 }
 
 tasks.register('downloadThirdPartyPlugins', Copy) {
-    description 'Downloads third-party plugins Find Security Bugs and FB-Contrib.'
+    description = 'Downloads third-party plugins Find Security Bugs and FB-Contrib.'
     from configurations.thirdPartyPlugins
     from configurations.fbContribJava6
     into 'build/resources/main/org/jetbrains/plugins/spotbugs/plugins'
@@ -95,7 +108,7 @@ tasks.register('downloadThirdPartyPlugins', Copy) {
 
 tasks.register('copyThirdPartyPlugins', Copy) {
     dependsOn(downloadThirdPartyPlugins, prepareSandbox)
-    description 'Copy plugins into sandbox.'
+    description = 'Copy plugins into sandbox.'
     from 'build/resources/main/org/jetbrains/plugins/spotbugs/plugins'
     into 'build/idea-sandbox/plugins/spotbugs-idea/customPlugins'
 }
@@ -121,12 +134,12 @@ test {
 jacocoTestReport {
     dependsOn test
     reports {
-        xml.enabled true
-        html.enabled false
-        csv.enabled false
+        xml.required = true
+        html.required = false
+        csv.required = false
     }
 }
 
 wrapper {
-    gradleVersion = '6.3'
+    gradleVersion = '8.12'
 }
