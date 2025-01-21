@@ -81,10 +81,12 @@ public final class ImportBugCollection extends AbstractAction {
 		if (dialogBuilder.getDialogWrapper().getExitCode() == DialogWrapper.CANCEL_EXIT_CODE) {
 			return;
 		}
-		final String fileToImport = importFileDialog.getText();
-		if (fileToImport == null || fileToImport.trim().isEmpty()) {
-			return;
-		}
+        String inputFile = importFileDialog.getText();
+        inputFile = MergeMultipleResultsFiles.mergeFiles(inputFile);
+        if (inputFile == null || inputFile.trim().isEmpty()) {
+            return;
+        }
+        final String fileToImport = inputFile;
 
 
 		final FindBugsResult findBugsResult = ToolWindowPanel.getInstance(project).getResult();
