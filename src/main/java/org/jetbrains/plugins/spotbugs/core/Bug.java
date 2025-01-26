@@ -89,4 +89,13 @@ public final class Bug {
 		}
 		return true;
 	}
+
+	public static boolean equalsBugClass(@NotNull final Bug bugA, @NotNull final Bug bugB) {
+		final BugInstance a = bugA.getInstance();
+		final BugInstance b = bugB.getInstance();
+		if (!StringUtil.equals(a.getPrimaryClass().getClassName(), b.getPrimaryClass().getClassName())) {
+			return false;
+		}
+		return true;
+	}
 }
