@@ -3,13 +3,13 @@
  *
  * This file is part of IntelliJ SpotBugs plugin.
  *
- * IntelliJ SpotBugs plugin is free software: you can redistribute it 
+ * IntelliJ SpotBugs plugin is free software: you can redistribute it
  * and/or modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation, either version 3 of 
+ * as published by the Free Software Foundation, either version 3 of
  * the License, or (at your option) any later version.
  *
  * IntelliJ SpotBugs plugin is distributed in the hope that it will
- * be useful, but WITHOUT ANY WARRANTY; without even the implied 
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
  *
@@ -19,10 +19,8 @@
  */
 package org.jetbrains.plugins.spotbugs.core;
 
-import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
-import com.intellij.notification.NotificationListener;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
@@ -78,7 +76,7 @@ final class RuntimeSettingsImporter {
 			final FileInputStream input = new FileInputStream(file);
 			try {
 				final WorkspaceSettings workspaceSettings = WorkspaceSettings.getInstance(project);
-				final Map<String, String> importFilePath = new HashMap<String, String>(workspaceSettings.importFilePath);
+				final Map<String, String> importFilePath = new HashMap<>(workspaceSettings.importFilePath);
 				final boolean success = new SettingsImporter(project) {
 					@Override
 					protected void handleError(@NotNull final String title, @NotNull final String message) {
@@ -109,12 +107,7 @@ final class RuntimeSettingsImporter {
 			@NotNull final String message
 	) {
 
-		EventDispatchThreadHelper.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				showImportPreferencesWarningImpl(project, module, title, message);
-			}
-		});
+		EventDispatchThreadHelper.invokeLater(() -> showImportPreferencesWarningImpl(project, module, title, message));
 	}
 
 	private static void showImportPreferencesWarningImpl(
@@ -133,18 +126,15 @@ final class RuntimeSettingsImporter {
 				title,
 				message,
 				NotificationType.ERROR,
-				new NotificationListener() {
-					@Override
-					public void hyperlinkUpdate(@NotNull final Notification notification, @NotNull final HyperlinkEvent event) {
-						if (HyperlinkEvent.EventType.ACTIVATED.equals(event.getEventType())) {
-							final String description = event.getDescription();
-							if (A_HREF_OPEN_IMPORT_SETTINGS.equals(description)) {
-								notification.hideBalloon();
-								if (overrideProjectSettings) {
-									ModuleConfigurableImpl.showShare(module);
-								} else {
-									ProjectConfigurableImpl.showShare(project);
-								}
+				(notification, event) -> {
+					if (HyperlinkEvent.EventType.ACTIVATED.equals(event.getEventType())) {
+						final String description = event.getDescription();
+						if (A_HREF_OPEN_IMPORT_SETTINGS.equals(description)) {
+							notification.hideBalloon();
+							if (overrideProjectSettings) {
+								ModuleConfigurableImpl.showShare(module);
+							} else {
+								ProjectConfigurableImpl.showShare(project);
 							}
 						}
 					}

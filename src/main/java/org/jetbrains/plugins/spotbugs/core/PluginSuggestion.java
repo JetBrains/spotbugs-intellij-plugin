@@ -3,13 +3,13 @@
  *
  * This file is part of IntelliJ SpotBugs plugin.
  *
- * IntelliJ SpotBugs plugin is free software: you can redistribute it 
+ * IntelliJ SpotBugs plugin is free software: you can redistribute it
  * and/or modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation, either version 3 of 
+ * as published by the Free Software Foundation, either version 3 of
  * the License, or (at your option) any later version.
  *
  * IntelliJ SpotBugs plugin is distributed in the hope that it will
- * be useful, but WITHOUT ANY WARRANTY; without even the implied 
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
  *
@@ -19,9 +19,7 @@
  */
 package org.jetbrains.plugins.spotbugs.core;
 
-import com.intellij.facet.Facet;
 import com.intellij.facet.FacetManager;
-import com.intellij.facet.FacetTypeId;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
@@ -128,7 +126,7 @@ public final class PluginSuggestion {
 
 	@NotNull
 	private static Set<Suggestion> collectSuggestions(@NotNull final Project project, @NotNull final ProjectSettings settings) {
-    final Set<Suggestion> ret = new HashSet<>();
+		final Set<Suggestion> ret = new HashSet<>();
 		collectSuggestionsByModules(project, settings, ret);
 		return ret;
 	}
@@ -140,9 +138,6 @@ public final class PluginSuggestion {
 	) {
 
 		final ModuleManager moduleManager = ModuleManager.getInstance(project);
-		if (moduleManager == null) {
-			return;
-		}
 		final Module[] modules = moduleManager.getModules();
 		for (final Module module : modules) {
 			collectSuggestionsByFacets(settings, module, suggestions);
@@ -159,10 +154,9 @@ public final class PluginSuggestion {
 		if (facetManager == null) {
 			return;
 		}
-		final Facet[] facets = facetManager.getAllFacets();
-		FacetTypeId facetTypeId;
-		for (final Facet facet : facets) {
-			facetTypeId = facet.getTypeId();
+		final var facets = facetManager.getAllFacets();
+		for (final var facet : facets) {
+			var facetTypeId = facet.getTypeId();
 			if (facetTypeId != null) {
 
 				if (!isAndroidFindbugsPluginEnabled(projectSettings)) {
@@ -178,25 +172,12 @@ public final class PluginSuggestion {
 		}
 	}
 
-	private static class Suggestion {
-
-		@NotNull
-		private final String pluginId;
-
-		@NotNull
-		private final String name;
-
-		@NotNull
-		private final Module module;
-
-		private final boolean moduleSettingsOverrideProjectSettings;
-
-		Suggestion(@NotNull final String pluginId, @NotNull final String name, @NotNull final Module module, final boolean moduleSettingsOverrideProjectSettings) {
-			this.pluginId = pluginId;
-			this.name = name;
-			this.module = module;
-			this.moduleSettingsOverrideProjectSettings = moduleSettingsOverrideProjectSettings;
-		}
+	private record Suggestion(
+			@NotNull String pluginId,
+			@NotNull String name,
+			@NotNull Module module,
+			boolean moduleSettingsOverrideProjectSettings
+	) {
 
 		@Override
 		public boolean equals(@Nullable final Object o) {

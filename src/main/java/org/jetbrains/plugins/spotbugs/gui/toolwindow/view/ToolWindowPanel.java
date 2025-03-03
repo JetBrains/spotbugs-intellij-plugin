@@ -3,13 +3,13 @@
  *
  * This file is part of IntelliJ SpotBugs plugin.
  *
- * IntelliJ SpotBugs plugin is free software: you can redistribute it 
+ * IntelliJ SpotBugs plugin is free software: you can redistribute it
  * and/or modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation, either version 3 of 
+ * as published by the Free Software Foundation, either version 3 of
  * the License, or (at your option) any later version.
  *
  * IntelliJ SpotBugs plugin is distributed in the hope that it will
- * be useful, but WITHOUT ANY WARRANTY; without even the implied 
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
  *
@@ -97,9 +97,6 @@ public final class ToolWindowPanel extends JPanel implements AnalysisStateListen
 		setLayout(new NDockLayout());
 		setBorder(JBUI.Borders.empty(1));
 
-		// Create the toolbars
-		//final DefaultActionGroup actionGroupLeft = new DefaultActionGroup();
-		//actionGroupLeft.add(new AnalyzeCurrentEditorFile());
 		final ActionGroup actionGroupLeft = (ActionGroup) ActionManager.getInstance().getAction(FindBugsPluginConstants.ACTION_GROUP_LEFT);
 		final ActionToolbar toolbarLeft1 = ActionManager.getInstance().createActionToolbar(FindBugsPluginConstants.TOOL_WINDOW_ID, actionGroupLeft, false);
 

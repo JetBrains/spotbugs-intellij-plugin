@@ -21,8 +21,6 @@ package org.jetbrains.plugins.spotbugs.gui.common;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
-import com.intellij.openapi.ui.popup.Balloon;
-import com.intellij.openapi.ui.popup.Balloon.Position;
 import com.intellij.openapi.wm.ToolWindowManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.spotbugs.common.FindBugsPluginConstants;
@@ -38,9 +36,6 @@ public final class BalloonTipFactory {
 
 	public static void showToolWindowInfoNotifier(@NotNull final Project project, final String html, @Nullable final HyperlinkListener hyperlinkListener) {
 		final ToolWindowManager manager = ToolWindowManager.getInstance(project);
-		if (manager == null) { // this should never happen.
-			return;
-		}
 		manager.notifyByBalloon(FindBugsPluginConstants.TOOL_WINDOW_ID, MessageType.INFO, html, null, hyperlinkListener);
 	}
 
@@ -50,9 +45,6 @@ public final class BalloonTipFactory {
 
 	public static void showToolWindowWarnNotifier(@NotNull final Project project, final String html, @Nullable final HyperlinkListener hyperlinkListener) {
 		final ToolWindowManager manager = ToolWindowManager.getInstance(project);
-		if (manager == null) { // this should never happen.
-			return;
-		}
 		manager.notifyByBalloon(FindBugsPluginConstants.TOOL_WINDOW_ID, MessageType.WARNING, html, null, hyperlinkListener);
 	}
 
@@ -62,9 +54,6 @@ public final class BalloonTipFactory {
 
 	public static void showToolWindowErrorNotifier(@NotNull final Project project, final String html, @Nullable final HyperlinkListener hyperlinkListener) {
 		final ToolWindowManager manager = ToolWindowManager.getInstance(project);
-		if (manager == null) { // this should never happen.
-			return;
-		}
 		manager.notifyByBalloon(FindBugsPluginConstants.TOOL_WINDOW_ID, MessageType.ERROR, html, null, hyperlinkListener);
 	}
 
