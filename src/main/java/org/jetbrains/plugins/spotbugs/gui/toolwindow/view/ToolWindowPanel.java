@@ -40,6 +40,7 @@ import org.jetbrains.plugins.spotbugs.common.util.FindBugsUtil;
 import org.jetbrains.plugins.spotbugs.core.FindBugsResult;
 import org.jetbrains.plugins.spotbugs.gui.common.*;
 import org.jetbrains.plugins.spotbugs.messages.*;
+import org.jetbrains.plugins.spotbugs.resources.ResourcesLoader;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -52,16 +53,10 @@ import java.util.*;
 @edu.umd.cs.findbugs.annotations.SuppressFBWarnings({"SE_BAD_FIELD"})
 public final class ToolWindowPanel extends JPanel implements AnalysisStateListener, Disposable {
 
-	private static final String NOTIFICATION_GROUP_ID_ANALYSIS_FINISHED = "SpotBugs: Analysis Finished";
-	private static final NotificationGroup NOTIFICATION_GROUP_ANALYSIS_FINISHED = NotificationGroup.toolWindowGroup(
-			NOTIFICATION_GROUP_ID_ANALYSIS_FINISHED,
-			FindBugsPluginConstants.TOOL_WINDOW_ID,
-			false
-	);
+	static final String NOTIFICATION_GROUP_ID_ANALYSIS_FINISHED = "SpotBugs.AnalysisFinished";
 	private static final Logger LOGGER = Logger.getInstance(ToolWindowPanel.class.getName());
 
 	private static final String A_HREF_MORE_ANCHOR = "#more";
-	private static final String A_HREF_DISABLE_ANCHOR = "#disable";
 	private static final String A_HREF_ERROR_ANCHOR = "#error";
 
 	private static final String DEFAULT_LAYOUT_DEF = "(ROW (LEAF name=left weight=0.4) (LEAF name=right weight=0.6))";
@@ -254,7 +249,7 @@ public final class ToolWindowPanel extends JPanel implements AnalysisStateListen
 			notificationType = NotificationType.INFORMATION;
 			message.append("&nbsp;<a href='").append(A_HREF_MORE_ANCHOR).append("'>more...</a><br/>");
 		}
-		message.append("<font size='10px'>using ").append(VersionManager.getFullVersion()).append(" with SpotBugs version ").append(FindBugsUtil.getFindBugsFullVersion()).append("</font><br/><br/>");
+		message.append("<font size='10px'>using ").append(VersionManager.getFullVersion()).append(" with SpotBugs version ").append(FindBugsUtil.getFindBugsFullVersion()).append("</font><br/>");
 
 		if (error != null) {
 			final boolean findBugsError = FindBugsUtil.isFindBugsError(error);
@@ -280,12 +275,14 @@ public final class ToolWindowPanel extends JPanel implements AnalysisStateListen
 			// use balloon because error should never disabled
 			BalloonTipFactory.showToolWindowErrorNotifier(_project, message.toString(), new BalloonErrorListenerImpl(ToolWindowPanel.this, result, ideMessagePanel));
 		} else {
-			message.append("<a href='").append(A_HREF_DISABLE_ANCHOR).append("'>Disable notification").append("</a>");
-			NOTIFICATION_GROUP_ANALYSIS_FINISHED.createNotification(
+			NotificationGroupManager.getInstance()
+					.getNotificationGroup(NOTIFICATION_GROUP_ID_ANALYSIS_FINISHED)
+					.createNotification(
 							VersionManager.getName() + ": Analysis Finished", message.toString(), notificationType)
-							.setImportant(false)
-							.setListener(new NotificationListenerImpl(ToolWindowPanel.this, result))
-							.notify(_project);
+					.setImportant(false)
+					.setListener(new NotificationListenerImpl(ToolWindowPanel.this, result))
+					.addAction(ActionManager.getInstance().getAction("SpotBugs.DisableNotificationAction"))
+					.notify(_project);
 		}
 
 		EditorFactory.getInstance().refreshAllEditors();
@@ -439,23 +436,6 @@ public final class ToolWindowPanel extends JPanel implements AnalysisStateListen
 				final String desc = e.getDescription();
 				if (desc.equals(A_HREF_MORE_ANCHOR)) {
 					openAnalysisRunDetailsDialog();
-				} else if (desc.equals(A_HREF_DISABLE_ANCHOR)) {
-					final int result = Messages.showYesNoDialog(
-							_toolWindowPanel.getProject(),
-							"Notification will be disabled for all projects.\n\n" +
-									"Settings | Appearance & Behavior | Notifications | " +
-									NOTIFICATION_GROUP_ID_ANALYSIS_FINISHED +
-									"\ncan be used to configure the notification.",
-							"SpotBugs Analysis Finished Notification",
-							"Disable Notification", CommonBundle.getCancelButtonText(), Messages.getWarningIcon());
-					if (result == Messages.YES) {
-						NotificationUtil.getNotificationsConfigurationImpl().changeSettings(
-								NOTIFICATION_GROUP_ID_ANALYSIS_FINISHED,
-								NotificationDisplayType.NONE, false, false);
-						notification.expire();
-					} else {
-						notification.hideBalloon();
-					}
 				}
 			}
 		}

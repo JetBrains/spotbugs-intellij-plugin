@@ -20,10 +20,7 @@
 package org.jetbrains.plugins.spotbugs.core;
 
 import com.intellij.facet.FacetManager;
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationDisplayType;
-import com.intellij.notification.NotificationGroup;
-import com.intellij.notification.NotificationType;
+import com.intellij.notification.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
@@ -34,18 +31,16 @@ import org.jetbrains.plugins.spotbugs.gui.common.NotificationUtil;
 import org.jetbrains.plugins.spotbugs.gui.settings.ModuleConfigurableImpl;
 import org.jetbrains.plugins.spotbugs.gui.settings.ProjectConfigurableImpl;
 import org.jetbrains.plugins.spotbugs.plugins.Plugins;
+import org.jetbrains.plugins.spotbugs.resources.ResourcesLoader;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public final class PluginSuggestion {
 
-	private static final String NOTIFICATION_GROUP_ID_PLUGIN_SUGGESTION = "SpotBugs: Plugin Suggestion";
-	private static final NotificationGroup NOTIFICATION_GROUP_PLUGIN_SUGGESTION = new NotificationGroup(NOTIFICATION_GROUP_ID_PLUGIN_SUGGESTION, NotificationDisplayType.STICKY_BALLOON, false);
-
 	public static void suggestPlugins(@NotNull final Project project) {
 		final ProjectSettings settings = ProjectSettings.getInstance(project);
-		if (!NotificationUtil.isGroupEnabled(NOTIFICATION_GROUP_ID_PLUGIN_SUGGESTION)) {
+		if (!NotificationUtil.isGroupEnabled("SpotBugs: Plugin Suggestion")) {
 			return;
 		}
 		if (isAndroidFindbugsPluginEnabled(settings)) {
@@ -90,38 +85,34 @@ public final class PluginSuggestion {
 			@NotNull final Project project,
 			@NotNull final Set<Suggestion> suggestions
 	) {
+		Notification notification = NotificationGroupManager.getInstance()
+				.getNotificationGroup("SpotBugs.PluginSuggestion")
+				.createNotification(
+						ResourcesLoader.getString("notification.plugin.suggestion"),
+						NotificationType.INFORMATION
+				)
+				.setImportant(false);
 
-		final StringBuilder sb = new StringBuilder();
 		for (final Suggestion suggestion : suggestions) {
-			sb.append("&nbsp;&nbsp; <a href='").append(suggestion.pluginId).append("'>").append("Enable '").append(suggestion.name).append("'</a>");
-			if (suggestion.moduleSettingsOverrideProjectSettings) {
-				sb.append(" for module '").append(suggestion.module.getName()).append("'");
-			}
-			sb.append("<br>");
-		}
-		sb.append("<br><a href='").append(AbstractSuggestionNotificationListener.A_HREF_DISABLE_ANCHOR).append("'>Disable Suggestion</a>");
-
-		NOTIFICATION_GROUP_PLUGIN_SUGGESTION.createNotification(
-				"SpotBugs Plugin Suggestion",
-				sb.toString(),
-				NotificationType.INFORMATION,
-				new AbstractSuggestionNotificationListener(project, NOTIFICATION_GROUP_ID_PLUGIN_SUGGESTION) {
-					@Override
-					protected void linkClicked(@NotNull final Notification notification, String description) {
-						Suggestion suggestion = suggestions.iterator().next();
-						for (final Suggestion s : suggestions) {
-							if (suggestion.pluginId.equals(description)) {
-								suggestion = s;
-								break;
-							}
-						}
-						enablePlugin(project, suggestion.module, suggestion.moduleSettingsOverrideProjectSettings);
-						if (suggestions.size() == 1) {
-							notification.hideBalloon();
-						}
-					}
+			notification.addAction(NotificationAction.create(getNotificationActionText(suggestion), (e, n) -> {
+				enablePlugin(project, suggestion.module, suggestion.moduleSettingsOverrideProjectSettings);
+				if (suggestions.size() == 1) {
+					n.hideBalloon();
 				}
-		).setImportant(false).notify(project);
+			}));
+		}
+
+		notification.notify(project);
+	}
+
+	@NotNull
+	private static String getNotificationActionText(@NotNull Suggestion suggestion) {
+		StringBuilder actionText = new StringBuilder();
+		actionText.append("Enable '").append(suggestion.name).append("'");
+		if (suggestion.moduleSettingsOverrideProjectSettings) {
+			actionText.append(" for module '").append(suggestion.module.getName()).append("'");
+		}
+		return actionText.toString();
 	}
 
 	@NotNull
