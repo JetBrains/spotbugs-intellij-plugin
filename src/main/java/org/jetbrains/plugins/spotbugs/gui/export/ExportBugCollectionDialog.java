@@ -73,10 +73,10 @@ public final class ExportBugCollectionDialog extends DialogWrapper {
 		final FileTextField field = FileChooserFactory.getInstance().createFileTextField(FileChooserDescriptorFactory.createSingleFolderDescriptor(), myDisposable);
 		targetDirectoryField = new TextFieldWithBrowseButton(field.getField());
 		targetDirectoryField.addBrowseFolderListener(
-				StringUtil.capitalizeWords(ResourcesLoader.getString("export.directory.choose.title"), true),
-				ResourcesLoader.getString("export.directory.choose.text"),
 				project,
 				FileChooserDescriptorFactory.createSingleFolderDescriptor()
+						.withTitle(StringUtil.capitalizeWords(ResourcesLoader.getString("export.directory.choose.title"), true))
+						.withDescription(ResourcesLoader.getString("export.directory.choose.text"))
 		);
 
 		final LabeledComponent<TextFieldWithBrowseButton> targetDirectoryLabeled = new LabeledComponent<TextFieldWithBrowseButton>();
