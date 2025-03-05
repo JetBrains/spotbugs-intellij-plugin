@@ -184,10 +184,8 @@
     <depends>com.intellij.modules.java</depends>
 
     <resource-bundle>org.jetbrains.plugins.spotbugs.resources.i18n.Messages</resource-bundle>
-    <applicationListeners>
-        <listener class="org.jetbrains.plugins.spotbugs.core.ProjectOpenCloseListener" topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
     <extensions defaultExtensionNs="com.intellij">
+        <postStartupActivity implementation="org.jetbrains.plugins.spotbugs.core.SpotBugsPostStartupActivity"/>
         <toolWindow anchor="bottom" id="SpotBugs" icon="PluginIcons.FINDBUGS_ICON_13X13"
                     factoryClass="org.jetbrains.plugins.spotbugs.core.ToolWindowFactoryImpl"/>
 
